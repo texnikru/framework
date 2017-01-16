@@ -48,10 +48,13 @@ class RedisStore extends TaggableStore implements StoreInterface {
 	 */
 	public function get($key)
 	{
-		if ( ! is_null($value = $this->connection()->get($this->prefix.$key)))
+		try
 		{
-			return is_numeric($value) ? $value : unserialize($value);
-		}
+			if ( ! is_null($value = $this->connection()->get($this->prefix.$key)))
+			{
+				return is_numeric($value) ? $value : unserialize($value);
+			}
+		} catch (\Predis\Connection\ConnectionException $e) {}
 	}
 
 	/**
@@ -68,7 +71,10 @@ class RedisStore extends TaggableStore implements StoreInterface {
 
 		$minutes = max(1, $minutes);
 
-		$this->connection()->setex($this->prefix.$key, $minutes * 60, $value);
+		try
+		{
+			$this->connection()->setex($this->prefix.$key, $minutes * 60, $value);
+		} catch (\Predis\Connection\ConnectionException $e) {}
 	}
 
 	/**
@@ -80,7 +86,10 @@ class RedisStore extends TaggableStore implements StoreInterface {
 	 */
 	public function increment($key, $value = 1)
 	{
-		return $this->connection()->incrby($this->prefix.$key, $value);
+		try
+		{
+			return $this->connection()->incrby($this->prefix.$key, $value);
+		} catch (\Predis\Connection\ConnectionException $e) {}
 	}
 
 	/**
@@ -92,7 +101,10 @@ class RedisStore extends TaggableStore implements StoreInterface {
 	 */
 	public function decrement($key, $value = 1)
 	{
-		return $this->connection()->decrby($this->prefix.$key, $value);
+		try
+		{
+			return $this->connection()->decrby($this->prefix.$key, $value);
+		} catch (\Predis\Connection\ConnectionException $e) {}
 	}
 
 	/**
@@ -106,7 +118,10 @@ class RedisStore extends TaggableStore implements StoreInterface {
 	{
 		$value = is_numeric($value) ? $value : serialize($value);
 
-		$this->connection()->set($this->prefix.$key, $value);
+		try
+		{
+			$this->connection()->set($this->prefix.$key, $value);
+		} catch (\Predis\Connection\ConnectionException $e) {}
 	}
 
 	/**
@@ -117,7 +132,10 @@ class RedisStore extends TaggableStore implements StoreInterface {
 	 */
 	public function forget($key)
 	{
-		$this->connection()->del($this->prefix.$key);
+		try
+		{
+			$this->connection()->del($this->prefix.$key);
+		} catch (\Predis\Connection\ConnectionException $e) {}
 	}
 
 	/**
@@ -127,7 +145,10 @@ class RedisStore extends TaggableStore implements StoreInterface {
 	 */
 	public function flush()
 	{
-		$this->connection()->flushdb();
+		try
+		{
+			$this->connection()->flushdb();
+		} catch (\Predis\Connection\ConnectionException $e) {}
 	}
 
 	/**
