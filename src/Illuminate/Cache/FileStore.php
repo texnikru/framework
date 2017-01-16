@@ -21,8 +21,8 @@ class FileStore implements StoreInterface {
 	/**
 	 * Create a new file cache store instance.
 	 *
-	 * @param  \Illuminate\Filesystem\Filesystem  $files
-	 * @param  string  $directory
+	 * @param  \Illuminate\Filesystem\Filesystem $files
+	 * @param  string                            $directory
 	 * @return void
 	 */
 	public function __construct(Filesystem $files, $directory)
@@ -34,7 +34,7 @@ class FileStore implements StoreInterface {
 	/**
 	 * Retrieve an item from the cache by key.
 	 *
-	 * @param  string  $key
+	 * @param  string $key
 	 * @return mixed
 	 */
 	public function get($key)
@@ -45,7 +45,7 @@ class FileStore implements StoreInterface {
 	/**
 	 * Retrieve an item and expiry time from the cache by key.
 	 *
-	 * @param  string  $key
+	 * @param  string $key
 	 * @return array
 	 */
 	protected function getPayload($key)
@@ -79,7 +79,16 @@ class FileStore implements StoreInterface {
 			return array('data' => null, 'time' => null);
 		}
 
-		$data = unserialize(substr($contents, 10));
+		// Stored cache may be corrupted
+		$contents = substr($contents, 10);
+		if ( ! is_serialized($contents))
+		{
+			$this->forget($key);
+
+			return array('data' => NULL, 'time' => NULL);
+		}
+
+		$data = unserialize($contents);
 
 		// Next, we'll extract the number of minutes that are remaining for a cache
 		// so that we can properly retain the time for things like the increment
@@ -92,9 +101,9 @@ class FileStore implements StoreInterface {
 	/**
 	 * Store an item in the cache for a given number of minutes.
 	 *
-	 * @param  string  $key
-	 * @param  mixed   $value
-	 * @param  int     $minutes
+	 * @param  string $key
+	 * @param  mixed  $value
+	 * @param  int    $minutes
 	 * @return void
 	 */
 	public function put($key, $value, $minutes)
@@ -109,7 +118,7 @@ class FileStore implements StoreInterface {
 	/**
 	 * Create the file cache directory if necessary.
 	 *
-	 * @param  string  $path
+	 * @param  string $path
 	 * @return void
 	 */
 	protected function createCacheDirectory($path)
@@ -127,8 +136,8 @@ class FileStore implements StoreInterface {
 	/**
 	 * Increment the value of an item in the cache.
 	 *
-	 * @param  string  $key
-	 * @param  mixed   $value
+	 * @param  string $key
+	 * @param  mixed  $value
 	 * @return int
 	 */
 	public function increment($key, $value = 1)
@@ -145,8 +154,8 @@ class FileStore implements StoreInterface {
 	/**
 	 * Decrement the value of an item in the cache.
 	 *
-	 * @param  string  $key
-	 * @param  mixed   $value
+	 * @param  string $key
+	 * @param  mixed  $value
 	 * @return int
 	 */
 	public function decrement($key, $value = 1)
@@ -157,8 +166,8 @@ class FileStore implements StoreInterface {
 	/**
 	 * Store an item in the cache indefinitely.
 	 *
-	 * @param  string  $key
-	 * @param  mixed   $value
+	 * @param  string $key
+	 * @param  mixed  $value
 	 * @return void
 	 */
 	public function forever($key, $value)
@@ -169,7 +178,7 @@ class FileStore implements StoreInterface {
 	/**
 	 * Remove an item from the cache.
 	 *
-	 * @param  string  $key
+	 * @param  string $key
 	 * @return void
 	 */
 	public function forget($key)
@@ -201,7 +210,7 @@ class FileStore implements StoreInterface {
 	/**
 	 * Get the full path for the given cache key.
 	 *
-	 * @param  string  $key
+	 * @param  string $key
 	 * @return string
 	 */
 	protected function path($key)
@@ -214,7 +223,7 @@ class FileStore implements StoreInterface {
 	/**
 	 * Get the expiration time based on the given minutes.
 	 *
-	 * @param  int  $minutes
+	 * @param  int $minutes
 	 * @return int
 	 */
 	protected function expiration($minutes)
