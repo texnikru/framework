@@ -1,5 +1,5 @@
 {
-    "name": "texnikru/laravel-framework-4",
+    "name": "laravel/framework",
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
