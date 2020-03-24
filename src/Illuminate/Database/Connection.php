@@ -1,11 +1,11 @@
 <?php namespace Illuminate\Database;
 
-use PDO;
 use Closure;
 use DateTime;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Database\Query\Processors\Processor;
 use Doctrine\DBAL\Connection as DoctrineConnection;
+use Illuminate\Database\Query\Processors\Processor;
+use Illuminate\Events\Dispatcher;
+use PDO;
 
 class Connection implements ConnectionInterface {
 
@@ -659,16 +659,50 @@ class Connection implements ConnectionInterface {
 		throw $e;
 	}
 
-	/**
-	 * Determine if the given exception was caused by a lost connection.
-	 *
+    /**
+     * Determine if the given exception was caused by a lost connection.
+     *
 	 * @param  \Illuminate\Database\QueryException
-	 * @return bool
-	 */
-	protected function causedByLostConnection(QueryException $e)
-	{
-		return str_contains($e->getPrevious()->getMessage(), 'server has gone away');
-	}
+     * @return bool
+     */
+    protected function causedByLostConnection(QueryException $e)
+    {
+        $message = $e->getMessage();
+
+        $prev = $e->getPrevious();
+        if (isset($prev)) {
+            $message .= ' ';
+            $message .= $prev->getMessage();
+        }
+
+        return str_contains($message, [
+            'server has gone away',
+            'no connection to the server',
+            'Lost connection',
+            'is dead or not enabled',
+            'Error while sending',
+            'decryption failed or bad record mac',
+            'server closed the connection unexpectedly',
+            'SSL connection has been closed unexpectedly',
+            'Error writing data to the connection',
+            'Resource deadlock avoided',
+            'Transaction() on null',
+            'child connection forced to terminate due to client_idle_limit',
+            'query_wait_timeout',
+            'reset by peer',
+            'Physical connection is not usable',
+            'TCP Provider: Error code 0x68',
+            'ORA-03114',
+            'Packets out of order. Expected',
+            'Adaptive Server connection failed',
+            'Communication link failure',
+            'connection is no longer usable',
+            'Login timeout expired',
+            'Connection refused',
+            'running with the --read-only option so it cannot execute this statement',
+            'The connection is broken and recovery is not possible. The connection is marked by the client driver as unrecoverable. No attempt was made to restore the connection.',
+        ]);
+    }
 
 	/**
 	 * Disconnect from the underlying PDO connection.
