@@ -89,6 +89,10 @@ abstract class Job {
 	 */
 	protected function resolveAndFire(array $payload)
 	{
+        if (!isset($payload['job'])) {
+            return;
+        }
+
 		list($class, $method) = $this->parseJob($payload['job']);
 
 		$this->instance = $this->resolve($class);
