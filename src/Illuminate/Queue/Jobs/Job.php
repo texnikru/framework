@@ -88,17 +88,32 @@ abstract class Job {
 	 * @return void
 	 */
 	protected function resolveAndFire(array $payload)
-	{
+    {
         if (!isset($payload['job'])) {
             return;
         }
 
-		list($class, $method) = $this->parseJob($payload['job']);
+        if (class_exists('Tideways\Profiler')) {
+            \Tideways\Profiler::start();
+            \Tideways\Profiler::setTransactionName($payload['job']);
+            \Tideways\Profiler::setCustomVariable('data', $payload['data']);
+        }
 
-		$this->instance = $this->resolve($class);
+        try {
+            list($class, $method) = $this->parseJob($payload['job']);
+            $this->instance = $this->resolve($class);
+            $this->instance->{$method}($this, $payload['data']);
 
-		$this->instance->{$method}($this, $payload['data']);
-	}
+        } catch (\Throwable $e) {
+            if (class_exists('Tideways\Profiler')) {
+                \Tideways\Profiler::logException($e);
+            }
+        } finally {
+            if (class_exists('Tideways\Profiler')) {
+                \Tideways\Profiler::stop();
+            }
+        }
+    }
 
 	/**
 	 * Resolve the given job handler.
