@@ -139,7 +139,7 @@ class Handler {
 	/**
 	 * Handle an exception for the application.
 	 *
-	 * @param  \Exception  $exception
+	 * @param  \Exception|\Throwable  $exception
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function handleException($exception)
@@ -275,7 +275,7 @@ class Handler {
 	/**
 	 * Display the given exception to the user.
 	 *
-	 * @param  \Exception  $exception
+	 * @param  \Exception|\Throwable  $exception
 	 * @return void
 	 */
 	protected function displayException($exception)
@@ -322,10 +322,10 @@ class Handler {
 	/**
 	 * Format an exception thrown by a handler.
 	 *
-	 * @param  \Exception  $e
+	 * @param  \Exception|\Throwable  $e
 	 * @return string
 	 */
-	protected function formatException(\Exception $e)
+	protected function formatException($e)
 	{
 		if ($this->debug)
 		{
