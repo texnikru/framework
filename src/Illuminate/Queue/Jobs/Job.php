@@ -96,7 +96,6 @@ abstract class Job {
         if (class_exists('Tideways\Profiler')) {
             \Tideways\Profiler::start();
             \Tideways\Profiler::setTransactionName($payload['job']);
-            \Tideways\Profiler::setCustomVariable('data', $payload['data']);
         }
 
         try {
@@ -104,14 +103,18 @@ abstract class Job {
             $this->instance = $this->resolve($class);
             $this->instance->{$method}($this, $payload['data']);
 
+        } catch (\Exception $e) {
+            if (class_exists('Tideways\Profiler')) {
+                \Tideways\Profiler::logException($e);
+            }
         } catch (\Throwable $e) {
             if (class_exists('Tideways\Profiler')) {
                 \Tideways\Profiler::logException($e);
             }
-        } finally {
-            if (class_exists('Tideways\Profiler')) {
-                \Tideways\Profiler::stop();
-            }
+        }
+
+        if (class_exists('Tideways\Profiler')) {
+            \Tideways\Profiler::stop();
         }
     }
 
