@@ -183,10 +183,11 @@ abstract class Job {
 	 *
 	 * @return string
 	 */
-	public function getName()
-	{
-		return json_decode($this->getRawBody(), true)['job'];
-	}
+    public function getName()
+    {
+        $decoded = json_decode($this->getRawBody(), true);
+        return isset($decoded['job']) ? $decoded['job'] : '(undefined)';
+    }
 
 	/**
 	 * Get the name of the queue the job belongs to.
