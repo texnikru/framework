@@ -5,6 +5,7 @@ use DateTime;
 use Doctrine\DBAL\Connection as DoctrineConnection;
 use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Str;
 use PDO;
 
 class Connection implements ConnectionInterface {
@@ -675,7 +676,7 @@ class Connection implements ConnectionInterface {
             $message .= $prev->getMessage();
         }
 
-        return str_contains($message, [
+        return Str::contains($message, [
             'server has gone away',
             'no connection to the server',
             'Lost connection',
