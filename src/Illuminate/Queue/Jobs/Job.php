@@ -94,8 +94,10 @@ abstract class Job {
         }
 
         if(class_exists('\Sentry\SentrySdk')) {
+            $slugger = new \Symfony\Component\String\Slugger\AsciiSlugger();
+
             $checkInId = \Sentry\captureCheckIn(
-                $monitorSlug = $payload['job'],
+                $monitorSlug = $slugger->slug($payload['job']),
                 \Sentry\CheckInStatus::inProgress()
             );
         }
