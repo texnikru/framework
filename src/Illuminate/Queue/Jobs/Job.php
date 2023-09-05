@@ -1,6 +1,7 @@
 <?php namespace Illuminate\Queue\Jobs;
 
 use DateTime;
+use Illuminate\Support\Str;
 
 abstract class Job {
 
@@ -93,11 +94,9 @@ abstract class Job {
             return;
         }
 
-        if(class_exists('\Sentry\SentrySdk')) {
-            $slugger = new \Symfony\Component\String\Slugger\AsciiSlugger();
-
+        if (class_exists('\Sentry\SentrySdk')) {
             $checkInId = \Sentry\captureCheckIn(
-                $monitorSlug = $slugger->slug($payload['job']),
+                $monitorSlug = Str::slug($payload['job']),
                 \Sentry\CheckInStatus::inProgress()
             );
         }
