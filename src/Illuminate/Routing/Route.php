@@ -102,12 +102,13 @@ class Route {
 	 *
 	 * @return mixed
 	 */
-	public function run()
-	{
+    public function run()
+    {
 		$parameters = array_filter($this->parameters(), function($p) { return isset($p); });
 
-		return call_user_func_array($this->action['uses'], $parameters);
-	}
+        $parameters = array_values($parameters);
+        return call_user_func_array($this->action['uses'], $parameters);
+    }
 
 	/**
 	 * Determine if the route matches given request.
