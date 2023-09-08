@@ -228,6 +228,7 @@ abstract class Controller {
 	{
 		$this->setupLayout();
 
+        $parameters = array_values($parameters);
 		$response = call_user_func_array(array($this, $method), $parameters);
 
 		// If no response is returned from the controller action and a layout is being
