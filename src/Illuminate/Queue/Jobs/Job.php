@@ -90,55 +90,22 @@ abstract class Job {
      */
     protected function resolveAndFire(array $payload)
     {
-        if( ! isset($payload['job'])) {
+        if(empty($payload['job'])) {
             return;
         }
 
-        if (class_exists('\Sentry\SentrySdk')) {
-            $checkInId = \Sentry\captureCheckIn(
-                $monitorSlug = Str::slug($payload['job']),
-                \Sentry\CheckInStatus::inProgress()
-            );
+        if(class_exists('\Sentry\SentrySdk')) {
+            \Sentry\configureScope(function (\Sentry\State\Scope $scope) use ($payload) {
+                $scope->setContext('job', [
+                    'handler' => $payload['job'],
+                    'data'    => $payload['data'],
+                ]);
+            });
         }
 
-        try {
-            list($class, $method) = $this->parseJob($payload['job']);
-            $this->instance = $this->resolve($class);
-            $this->instance->{$method}($this, $payload['data']);
-
-            if(class_exists('\Sentry\SentrySdk')) {
-                \Sentry\captureCheckIn(
-                    $monitorSlug,
-                    \Sentry\CheckInStatus::ok(),
-                    NULL,
-                    NULL,
-                    $checkInId
-                );
-            }
-        }
-        catch(\Exception $e) {
-            if(class_exists('\Sentry\SentrySdk')) {
-                \Sentry\captureCheckIn(
-                    $monitorSlug,
-                    \Sentry\CheckInStatus::error(),
-                    NULL,
-                    NULL,
-                    $checkInId
-                );
-            }
-        }
-        catch(\Throwable $e) {
-            if(class_exists('\Sentry\SentrySdk')) {
-                \Sentry\captureCheckIn(
-                    $monitorSlug,
-                    \Sentry\CheckInStatus::error(),
-                    NULL,
-                    NULL,
-                    $checkInId
-                );
-            }
-
-        }
+        list($class, $method) = $this->parseJob($payload['job']);
+        $this->instance = $this->resolve($class);
+        $this->instance->{$method}($this, $payload['data']);
     }
 
     /**
