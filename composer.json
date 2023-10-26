@@ -20,7 +20,7 @@
         "filp/whoops": "1.1.*",
         "jeremeamia/superclosure": "~1.0.1",
         "monolog/monolog": "~1.6",
-        "nesbot/carbon": "dev-dev-master#c417086",
+        "nesbot/carbon": "dev-master#c417086",
         "patchwork/utf8": "~1.1",
         "phpseclib/phpseclib": "0.3.*",
         "predis/predis": "0.8.*",
