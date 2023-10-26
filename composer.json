@@ -9,6 +9,9 @@
             "email": "taylorotwell@gmail.com"
         }
     ],
+    "repositories": [
+        { "type": "vcs", "url": "https://github.com/texnikru/carbon-1.x" }
+    ],
     "require": {
         "php": ">=5.4.0",
         "classpreloader/classpreloader": "~1.0.2",
