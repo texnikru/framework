@@ -9,6 +9,9 @@
             "email": "taylorotwell@gmail.com"
         }
     ],
+    "repositories": [
+        { "type": "vcs", "url": "https://github.com/texnikru/carbon-1.x" }
+    ],
     "require": {
         "php": ">=5.4.0",
         "classpreloader/classpreloader": "~1.0.2",
@@ -17,7 +20,7 @@
         "filp/whoops": "1.1.*",
         "jeremeamia/superclosure": "~1.0.1",
         "monolog/monolog": "~1.6",
-        "texnikru/carbon-1.x": "~1.0",
+        "nesbot/carbon": "dev-dev-master#c417086",
         "patchwork/utf8": "~1.1",
         "phpseclib/phpseclib": "0.3.*",
         "predis/predis": "0.8.*",
