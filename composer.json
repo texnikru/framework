@@ -33,7 +33,7 @@
         "symfony/debug": "2.7.*",
         "symfony/dom-crawler": "2.7.*",
         "symfony/finder": "2.7.*",
-        "symfony/http-foundation": "2.7-dev#3735826",
+        "symfony/http-foundation": "2.7.x-dev#3735826",
         "symfony/http-kernel": "2.7.*",
         "symfony/process": "2.7.*",
         "symfony/routing": "2.7.*",
