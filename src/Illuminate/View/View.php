@@ -94,7 +94,7 @@ class View implements ArrayAccess, Renderable
         {
             $this->factory->flushSections();
 
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 
