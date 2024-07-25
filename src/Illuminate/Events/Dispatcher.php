@@ -196,6 +196,7 @@ class Dispatcher {
 
 		foreach ($this->getListeners($event) as $listener)
 		{
+            $payload = array_values($payload);
 			$response = call_user_func_array($listener, $payload);
 
 			// If a response is returned from the listener and event halting is enabled
